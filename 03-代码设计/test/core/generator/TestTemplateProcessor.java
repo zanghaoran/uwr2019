@@ -65,8 +65,37 @@ public class TestTemplateProcessor implements DataSourceType{
         //------------------------------------------------
         //以上流程请在这里实现：
         //
-        //
-        // 这里写代码
+
+		DataSourceConfig dsc = Easymock.createMock(DataSourceConfig.class);
+
+		ArrayList<DataHolder> holder = new ArrayList<>();
+
+		ConstDataSource cds = EasyMock.createMock(ConstDataSource.class);
+
+		DataHolder dh1 = EasyMock.createMock(DataHolder.class);
+		EasyMock.expect(dh1.getValue()).andReturn("Female");
+
+		DataHolder dh2 = EasyMock.createMock(DataHolder.class);
+		EasyMock.expect(dh2.getValue()).andReturn("5");
+
+		DataHolder dh3 = EasyMock.createMock(DataHolder.class);
+		EasyMock.expect(dh3.getValue()).andReturn("5.0");
+		EasyMock.expect(dh3.getExpr()).andReturn("${num}+${readme}");
+		EasyMock.expect(dh3.fillValue()).andReturn(null);
+
+		holder.add(dh1);
+		holder.add(dh2);
+		holder.add(dh3);
+		EasyMock.expect(cds.getDataHolder("sex")).andReturn(dh1);
+		EasyMock.expect(cds.getDataHolder("readme")).andReturn(dh2);
+		EasyMock.expect(cds.getDataHolder("testexpr")).andReturn(dh3);
+
+		EasyMock.replay(cds,dh1,dh2,dh3);
+
+		PowerMock.mockStatic(DataSourceConfig.class);
+		EasyMock.expect(DataSourceConfig.newInstance()).andStubReturn(dsc);
+
+        // 
         //
         //------------------------------------------------
 		//5. 重放所有的行为。
@@ -75,3 +104,4 @@ public class TestTemplateProcessor implements DataSourceType{
 		tp = new TemplateProcessor();
 	}
 }
+
